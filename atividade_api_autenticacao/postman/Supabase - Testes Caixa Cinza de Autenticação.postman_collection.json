@@ -1,0 +1,364 @@
+{
+  "info": {
+    "_postman_id": "82342b9e-a1f9-4357-ad84-13b7c8c6be80",
+    "name": "Supabase - Testes Caixa Cinza de Autenticação",
+    "description": "Coleção acadêmica. Configure o Environment antes de executar. Não compartilhe tokens ou credenciais.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60028010",
+    "_collection_link": "https://go.postman.co/collection/60028010-82342b9e-a1f9-4357-ad84-13b7c8c6be80?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 - Login válido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Login válido deve retornar HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Resposta deve conter access_token\", function () { const data=pm.response.json(); pm.expect(data).to.have.property(\"access_token\"); pm.expect(data.access_token).to.be.a(\"string\").and.not.empty; });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Use um usuário previamente cadastrado no projeto Supabase."
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Senha incorreta",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Cenário negativo deve retornar HTTP 4xx\", function () { pm.expect(pm.response.code).to.be.within(400, 499); });",
+              "pm.test(\"Resposta de erro deve ser JSON quando houver corpo\", function () { if (pm.response.text()) { pm.response.to.be.json; } });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{invalid_password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "E-mail existente com senha deliberadamente incorreta."
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Usuário inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Cenário negativo deve retornar HTTP 4xx\", function () { pm.expect(pm.response.code).to.be.within(400, 499); });",
+              "pm.test(\"Resposta de erro deve ser JSON quando houver corpo\", function () { if (pm.response.text()) { pm.response.to.be.json; } });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{unknown_email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Use um endereço que não esteja cadastrado."
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Campos vazios",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Cenário negativo deve retornar HTTP 4xx\", function () { pm.expect(pm.response.code).to.be.within(400, 499); });",
+              "pm.test(\"Resposta de erro deve ser JSON quando houver corpo\", function () { if (pm.response.text()) { pm.response.to.be.json; } });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Envia email e password vazios para validar a resposta."
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Credenciais inválidas",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Cenário negativo deve retornar HTTP 4xx\", function () { pm.expect(pm.response.code).to.be.within(400, 499); });",
+              "pm.test(\"Resposta de erro deve ser JSON quando houver corpo\", function () { if (pm.response.text()) { pm.response.to.be.json; } });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"email-invalido\",\n  \"password\": \"qualquer-senha\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Envia formato de e-mail inválido."
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://SEU-PROJETO.supabase.co"
+    },
+    {
+      "key": "api_key",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "invalid_password",
+      "value": "SenhaErrada-123"
+    },
+    {
+      "key": "unknown_email",
+      "value": "usuario-inexistente@example.com"
+    }
+  ]
+}
